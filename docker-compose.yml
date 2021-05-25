@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+    keycloak.sample.database:
+        image: postgres
+        environment: 
+        - POSTGRES_DB=keycloak
+        - POSTGRES_PASSWORD=b3810e6f-a8f4-4145-b1bf-90cd4c77f1c0
+        - POSTGRES_USER=keycloak
+        networks: 
+        - keycloak.sample.network
+        ports: 
+        - 5432:5432
+        volumes: 
+        - keycloak.sample.volume:/var/lib/postgresql/data
+    keycloak.sample.admin:
+        image: quay.io/keycloak/keycloak:13.0.1
+        depends_on: 
+        - keycloak.sample.database
+        environment: 
+        - DB_ADDR=keycloak.sample.database
+        - DB_USER=keycloak
+        - DB_PASSWORD=b3810e6f-a8f4-4145-b1bf-90cd4c77f1c0
+        - DB_VENDOR=postgres
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
+        networks:
+        - keycloak.sample.network
+        ports:
+        - 80:8080
+
+networks:
+    keycloak.sample.network:
+
+volumes: 
+    keycloak.sample.volume:
